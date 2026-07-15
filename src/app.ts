@@ -8,6 +8,8 @@ import { env } from "./app/config/env.js";
 import { globalErrorHandler } from "./app/middlewares/globalErrorHandler.js";
 import { authRouter } from "./app/modules/auth/auth.route.js";
 import { courseRouter } from "./app/modules/course/course.route.js";
+import { dashboardRouter } from "./app/modules/dashboard/dashboard.route.js";
+import { reviewRouter } from "./app/modules/review/review.route.js";
 
 const app = express();
 
@@ -42,6 +44,8 @@ app.get(
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/courses", courseRouter);
+app.use("/api/v1/reviews", reviewRouter);
+app.use("/api/v1/dashboard", dashboardRouter);
 
 app.use(
   (
