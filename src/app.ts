@@ -5,6 +5,8 @@ import express, {
   type Response,
 } from "express";
 import { env } from "./app/config/env.js";
+import { globalErrorHandler } from "./app/middlewares/globalErrorHandler.js";
+import { authRouter } from "./app/modules/auth/auth.route.js";
 
 const app = express();
 
@@ -37,6 +39,8 @@ app.get(
   },
 );
 
+app.use("/api/v1/auth", authRouter);
+
 app.use(
   (
     request: Request,
@@ -50,20 +54,6 @@ app.use(
   },
 );
 
-app.use(
-  (
-    error: Error,
-    _request: Request,
-    response: Response,
-    _next: NextFunction,
-  ) => {
-    console.error(error);
-
-    response.status(500).json({
-      success: false,
-      message: "Internal server error",
-    });
-  },
-);
+app.use(globalErrorHandler);
 
 export default app;
