@@ -3,7 +3,7 @@ import type { SignOptions } from "jsonwebtoken";
 interface EnvironmentConfig {
   nodeEnv: string;
   port: number;
-  clientUrl: string;
+  clientUrls: string[];
   databaseUrl: string;
   jwtSecret: string;
   jwtExpiresIn: SignOptions["expiresIn"];
@@ -65,13 +65,33 @@ if (jwtSecret.length < 32) {
   );
 }
 
+const clientUrls = getRequiredEnvironmentVariable("CLIENT_URL")
+  .split(",")
+  .map((url) => url.trim())
+  .filter(Boolean);
+
+if (clientUrls.length === 0) {
+  throw new Error("CLIENT_URL must contain at least one URL");
+}
+
+for (const clientUrl of clientUrls) {
+  try {
+    const parsedUrl = new URL(clientUrl);
+
+    if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
+      throw new Error();
+    }
+  } catch {
+    throw new Error("CLIENT_URL must contain valid comma-separated HTTP(S) URLs");
+  }
+}
+
 export const env: EnvironmentConfig = {
   nodeEnv: process.env.NODE_ENV ?? "development",
 
   port,
 
-  clientUrl:
-    process.env.CLIENT_URL ?? "http://localhost:5173",
+  clientUrls,
 
   databaseUrl:
     getRequiredEnvironmentVariable("DATABASE_URL"),

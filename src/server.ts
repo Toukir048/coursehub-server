@@ -1,13 +1,14 @@
-import "dotenv/config";
 import { setServers } from "node:dns";
+
+setServers(["8.8.8.8", "8.8.4.4"]);
+
+import "dotenv/config";
 import app from "./app.js";
 import {
   connectDatabase,
   disconnectDatabase,
 } from "./app/config/database.js";
 import { env } from "./app/config/env.js";
-
-setServers(["8.8.8.8", "8.8.4.4"]);
 
 let server: ReturnType<typeof app.listen> | null = null;
 let isShuttingDown = false;

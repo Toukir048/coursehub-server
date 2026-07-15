@@ -30,20 +30,13 @@ export const authenticate = (
     );
   }
 
-  try {
-    const decodedToken = verifyAccessToken(token);
+  const decodedToken = verifyAccessToken(token);
 
-    request.user = {
-      userId: decodedToken.userId,
-      email: decodedToken.email,
-      role: decodedToken.role,
-    };
+  request.user = {
+    userId: decodedToken.userId,
+    email: decodedToken.email,
+    role: decodedToken.role,
+  };
 
-    next();
-  } catch {
-    throw new AppError(
-      401,
-      "Invalid or expired access token",
-    );
-  }
+  next();
 };

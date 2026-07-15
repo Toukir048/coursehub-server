@@ -5,6 +5,7 @@ import {
 import { AppError } from "../../errors/AppError.js";
 import type { UserRole } from "../user/user.interface.js";
 import { User } from "../user/user.model.js";
+import { Review } from "../review/review.model.js";
 import type {
   CourseListResult,
   CourseQuery,
@@ -417,6 +418,7 @@ const deleteCourse = async (
   checkCourseOwnership(course, requester);
 
   await course.deleteOne();
+  await Review.deleteMany({ course: course._id });
 };
 
 export const courseServices = {
