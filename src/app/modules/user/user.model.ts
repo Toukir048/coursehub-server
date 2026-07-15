@@ -21,7 +21,10 @@ const userSchema = new Schema<
       type: String,
       required: [true, "User name is required"],
       trim: true,
-      minlength: [2, "Name must contain at least 2 characters"],
+      minlength: [
+        2,
+        "Name must contain at least 2 characters",
+      ],
       maxlength: [
         50,
         "Name cannot contain more than 50 characters",
@@ -85,17 +88,11 @@ userSchema.pre("save", async function () {
 userSchema.methods.comparePassword = async function (
   candidatePassword: string,
 ): Promise<boolean> {
-  return bcrypt.compare(candidatePassword, this.password);
+  return bcrypt.compare(
+    candidatePassword,
+    this.password,
+  );
 };
-
-userSchema.index(
-  {
-    email: 1,
-  },
-  {
-    unique: true,
-  },
-);
 
 export type UserDocument = HydratedDocument<
   IUser,
