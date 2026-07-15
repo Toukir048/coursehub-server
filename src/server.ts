@@ -1,14 +1,19 @@
-import { setServers } from "node:dns";
-
-setServers(["8.8.8.8", "8.8.4.4"]);
-
 import "dotenv/config";
+import { setServers } from "node:dns";
 import app from "./app.js";
 import {
   connectDatabase,
   disconnectDatabase,
 } from "./app/config/database.js";
 import { env } from "./app/config/env.js";
+
+if (env.dnsServers.length > 0) {
+  setServers(env.dnsServers);
+
+  console.log(
+    `Custom DNS servers enabled: ${env.dnsServers.join(", ")}`,
+  );
+}
 
 let server: ReturnType<typeof app.listen> | null = null;
 let isShuttingDown = false;
@@ -27,6 +32,8 @@ const startServer = async (): Promise<void> => {
 
     if (error instanceof Error) {
       console.error(error.message);
+    } else {
+      console.error(error);
     }
 
     process.exit(1);
@@ -44,10 +51,21 @@ const shutdownServer = async (
 
   console.log(`${signal} received. Shutting down server...`);
 
-  await disconnectDatabase();
+  const finishShutdown = async (): Promise<void> => {
+    try {
+      await disconnectDatabase();
+      console.log("CourseHub server stopped successfully");
+      process.exit(0);
+    } catch (error) {
+      console.error("Failed to disconnect database");
+      console.error(error);
+      process.exit(1);
+    }
+  };
 
   if (!server) {
-    process.exit(0);
+    await finishShutdown();
+    return;
   }
 
   server.close((error) => {
@@ -57,8 +75,7 @@ const shutdownServer = async (
       process.exit(1);
     }
 
-    console.log("CourseHub server stopped successfully");
-    process.exit(0);
+    void finishShutdown();
   });
 };
 
@@ -72,13 +89,11 @@ process.on("SIGTERM", () => {
 
 process.on("unhandledRejection", (reason) => {
   console.error("Unhandled promise rejection:", reason);
-
   void shutdownServer("unhandledRejection");
 });
 
 process.on("uncaughtException", (error) => {
   console.error("Uncaught exception:", error);
-
   void shutdownServer("uncaughtException");
 });
 

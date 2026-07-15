@@ -21,7 +21,7 @@ Node.js, Express, TypeScript, MongoDB, Mongoose, JWT, bcrypt, cors, and dotenv.
 
 ## Environment variables
 
-Copy `.env.example` to `.env`. Required values are `CLIENT_URL`, `DATABASE_URL`, and a `JWT_SECRET` of at least 32 characters. `NODE_ENV`, `PORT`, `JWT_EXPIRES_IN`, and `BCRYPT_SALT_ROUNDS` control runtime behavior. `CLIENT_URL` accepts comma-separated HTTP(S) origins. Seed-only demo credentials are optional and documented in `.env.example`.
+Copy `.env.example` to `.env`. Required values are `CLIENT_URL`, `DATABASE_URL`, and a `JWT_SECRET` of at least 32 characters. `NODE_ENV`, `PORT`, `JWT_EXPIRES_IN`, and `BCRYPT_SALT_ROUNDS` control runtime behavior. `CLIENT_URL` accepts comma-separated HTTP(S) origins. Seed-only demo credentials are optional and documented in `.env.example`. The server uses operating-system DNS by default; `DNS_SERVERS` is an optional comma-separated fallback for environments that explicitly require custom resolvers.
 
 ## Local setup
 

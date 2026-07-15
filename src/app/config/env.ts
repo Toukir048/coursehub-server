@@ -8,6 +8,7 @@ interface EnvironmentConfig {
   jwtSecret: string;
   jwtExpiresIn: SignOptions["expiresIn"];
   bcryptSaltRounds: number;
+  dnsServers: string[];
 }
 
 const getRequiredEnvironmentVariable = (
@@ -103,4 +104,9 @@ export const env: EnvironmentConfig = {
   ) as SignOptions["expiresIn"],
 
   bcryptSaltRounds,
+
+  dnsServers: (process.env.DNS_SERVERS ?? "")
+    .split(",")
+    .map((server) => server.trim())
+    .filter(Boolean),
 };
