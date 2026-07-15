@@ -4,12 +4,13 @@ import express, {
   type Request,
   type Response,
 } from "express";
+import { env } from "./app/config/env.js";
 
 const app = express();
 
 app.use(
   cors({
-    origin: process.env.CLIENT_URL ?? "http://localhost:5173",
+    origin: env.clientUrl,
     credentials: true,
   }),
 );
@@ -24,14 +25,17 @@ app.get("/", (_request: Request, response: Response) => {
   });
 });
 
-app.get("/api/v1/health", (_request: Request, response: Response) => {
-  response.status(200).json({
-    success: true,
-    message: "CourseHub server is healthy",
-    environment: process.env.NODE_ENV ?? "development",
-    timestamp: new Date().toISOString(),
-  });
-});
+app.get(
+  "/api/v1/health",
+  (_request: Request, response: Response) => {
+    response.status(200).json({
+      success: true,
+      message: "CourseHub server is healthy",
+      environment: env.nodeEnv,
+      timestamp: new Date().toISOString(),
+    });
+  },
+);
 
 app.use(
   (
