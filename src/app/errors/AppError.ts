@@ -3,8 +3,8 @@ export class AppError extends Error {
   isOperational: boolean;
 
   constructor(
-    message: string,
     statusCode: number,
+    message: string,
     isOperational = true,
   ) {
     super(message);
@@ -12,6 +12,8 @@ export class AppError extends Error {
     this.name = this.constructor.name;
     this.statusCode = statusCode;
     this.isOperational = isOperational;
+
+    Object.setPrototypeOf(this, new.target.prototype);
 
     type ErrorConstructorWithStackTrace = ErrorConstructor & {
       captureStackTrace?: (
